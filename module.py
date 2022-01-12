@@ -243,4 +243,4 @@ class MyLightningModel(pl.LightningModule):
         )
 
         # return optimizer
-        return [optimizer], [lr_scheduler]
+        return {"optimizer": optimizer, "lr_scheduler": lr_scheduler}
