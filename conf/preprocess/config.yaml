@@ -7,7 +7,7 @@ n_jobs: 10
 
 speaker_list_path: ./corpus/CSJ/speaker_koen.list
 corpus_dir: ./corpus/CSJ
-out_dir: ./preprocessed_data/CSJ/ver220109
+out_dir: ./preprocessed_data/CSJ/ver220109_word
 person_id_list_path: ./corpus/CSJ/speaker.list
 
 # tagtext
@@ -15,11 +15,11 @@ person_id_list_path: ./corpus/CSJ/speaker.list
 # tokenizer_name: juman              # support (sudachipy, juman)
 
 # split data
-group_list_path: ./corpus/CSJ/core_person_class_by_position_list.txt
+group_list_path: ./corpus/CSJ/core_person_class_by_word_list.txt
 
 # get feature
 # nlp_model: bert                 # support (bert, fasttext)
 # fasttext_dir: ./fastText
 # fasttext_dim: 300
 bert_model_dir: ./bert/Japanese_L-24_H-1024_A-16_E-30_BPE_WWM_transformers
-filler_list_path: ./corpus/CSJ/filler.list
+fp_list_path: ./corpus/CSJ/fp.list
