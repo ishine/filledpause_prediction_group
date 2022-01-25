@@ -1,4 +1,3 @@
-import random
 from pathlib import Path
 from concurrent.futures import ProcessPoolExecutor
 from tqdm import tqdm
@@ -6,7 +5,7 @@ import hydra
 from omegaconf import DictConfig
 
 # My library
-from .my_analyze_token import get_morpheme_with_fillertag
+from .my_analyze_token import get_morpheme_with_fptag
 
 def process_tagtext(config):
     # Read person list file
@@ -52,26 +51,15 @@ def process_tagtext(config):
     with ProcessPoolExecutor(config.n_jobs) as executor:
         futures = [
             executor.submit(
-                get_morpheme_with_fillertag,
+                get_morpheme_with_fptag,
                 speaker_id,
                 koen_id,
                 trn_path,
                 remove_tags,
-                # config.thresh_len,
-                # config.tokenizer_name
             )
             for speaker_id, koen_id, trn_path in speakerid_koenid_trnpath_list
         ]
-        
-        # sentences = []
-        # for future in tqdm(futures):
-        #     sentences.append(
-        #         future.result()
-        #     )
-
-        # print(f"num of breath paras: {len(sentences)}")
-        # with open(out_dir / "ipu_list.txt", "w") as f:
-        #     f.write("\n".join(sentences))
+   
         ipu_list = []
         for future in tqdm(futures):
             ipu_list += future.result()

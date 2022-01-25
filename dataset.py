@@ -27,7 +27,7 @@ class MyDataset(Dataset):
         y_batch = torch.stack([torch.from_numpy(pad_1d(x[1], max_len)) for x in batch])
         return x_batch, y_batch
 
-# class NoFillerDataset(Dataset):
+# class NoFPDataset(Dataset):
 #     def __init__(self, in_paths, out_paths, utt_list_path=None):
 #         if utt_list_path is not None:
 #             self.text_dict = {}

@@ -2,28 +2,10 @@
 import copy
 
 # 言語処理
-# from sudachipy import tokenizer, dictionary
 from pyknp import Juman
 
-def get_morph(
-    text, 
-    # tokenizer_name="juman"
-    ):
+def get_morph(text):
     morphs = []
-
-    # if tokenizer_name == "sudachipy":
-    #     tokenizer_obj = dictionary.Dictionary().create()
-    #     mode = tokenizer.Tokenizer.SplitMode.C
-
-    #     for m in tokenizer_obj.tokenize(text, mode):
-    #         morphs.append({
-    #             "type": "L", 
-    #             "surface": m.surface(),
-    #             "dictionary_form": m.dictionary_form(),
-    #             "reading_form": m.reading_form(),
-    #             "pos": m.part_of_speech()
-    #         })
-    # elif tokenizer_name == "juman":
 
     juman = Juman()
     result = juman.analysis(text)
@@ -36,9 +18,6 @@ def get_morph(
             "dictionary_form": m.genkei,
             "pos": m.hinsi
         })
-
-    # else:
-    #     ValueError("only support {\"sudachipy\", \"juman\"}")
 
     return morphs
 
@@ -108,30 +87,30 @@ def tagcharacters_to_cleantext(characters, remove_tags={"F", "D", "D2", "X", "Al
                 
 #     return textwithf
 
-def characters_to_fillerinfo(characters, remove_tags={"D","D2","X","Al","Kf","Wf","Bf","L"}):
+def characters_to_fpinfo(characters, remove_tags={"D","D2","X","Al","Kf","Wf","Bf","L"}):
 
-    fillers = []
-    filler = ""
+    fp_list = []
+    fp = ""
     f_tag = False
     for c in characters:
         if "F" in c[1]:
-            filler += c[0]
+            fp += c[0]
             if not f_tag:
                 f_tag = True
         elif f_tag:
-            fillers.append(filler)
-            filler = ""
+            fp_list.append(fp)
+            fp = ""
             f_tag = False
     if f_tag:
-        fillers.append(filler)
-        filler = ""
+        fp_list.append(fp)
+        fp = ""
         f_tag = False
 
     f_start_pos = []
     f_tag = False
     i_char = 0
     for c in characters:
-        # fillerの開始位置ならリストに追加
+        # fpの開始位置ならリストに追加
         if "F" in c[1]:
             if not f_tag:
                 f_start_pos.append(i_char)
@@ -143,21 +122,16 @@ def characters_to_fillerinfo(characters, remove_tags={"D","D2","X","Al","Kf","Wf
         if len(remove_tags & set(c[1])) == 0:
             i_char += 1
                 
-    return fillers, f_start_pos
+    return fp_list, f_start_pos
 
-def cleantext_to_morphwithfiller(
-    clean_text, fillers, f_start_pos, 
-    # tokenizer_name="sudachipy"
-    ):
+def cleantext_to_morphwithfp(
+    clean_text, fp_list, f_start_pos):
 
-    morph = get_morph(
-        clean_text, 
-        # tokenizer_name=tokenizer_name
-        )
+    morph = get_morph(clean_text)
     morph_out = []
     i_char = 0
     i_m = 0
-    for f,f_pos in zip(fillers,f_start_pos):
+    for f,f_pos in zip(fp_list,f_start_pos):
 
         while i_char<f_pos:
             morph_out.append(morph[i_m])
@@ -179,39 +153,21 @@ def cleantext_to_morphwithfiller(
 
     return morph_out
 
-def tagtext_to_morphwithfiller(
+def tagtext_to_morphwithfp(
     tagtext, start_tag, 
-    # tokenizer_name="sudachipy", 
     remove_tags={"D", "D2", "X", "Al", "Kf", "Wf", "Bf", "L"}):
 
     tagcharacters, end_tag = tagtext_to_tagcharacters(
         tagtext, start_tag)
     cleantext = tagcharacters_to_cleantext(
         tagcharacters, remove_tags=remove_tags|{"F"})
-    fillers, f_start_pos = characters_to_fillerinfo(
+    fp_list, f_start_pos = characters_to_fpinfo(
         tagcharacters, remove_tags=remove_tags)
     
-    morphwithfiller = cleantext_to_morphwithfiller(
-        cleantext, fillers, f_start_pos, 
-        # tokenizer_name=tokenizer_name
-        )
+    morphwithfp = cleantext_to_morphwithfp(
+        cleantext, fp_list, f_start_pos)
     
-    return tagcharacters, cleantext, end_tag, morphwithfiller
-
-# def tagtext_to_cleantext(tagtext,start_tag):
-    
-#     tagcharacters,end_tag = tagtext_to_tagcharacters(tagtext,start_tag)
-#     cleantext = tagcharacters_to_cleantext(tagcharacters)
-    
-#     return cleantext, end_tag
-
-# def tagtext_to_textwithf(tagtext,start_tag):
-    
-#     tagcharacters,end_tag = tagtext_to_tagcharacters(tagtext,start_tag)
-#     textwithf = tagcharacters_to_textwithf(tagcharacters)
-    
-#     return textwithf, end_tag
-
+    return tagcharacters, cleantext, end_tag, morphwithfp
 
 class IPU:
     def __init__(
@@ -220,7 +176,6 @@ class IPU:
         ipu_textlist_dict, 
         start_tag, 
         remove_tags,
-        # tokenizer_name="sudachipy"
     ):
                 
         tag_text_list = ipu_textlist_dict[ipu_id]
@@ -236,10 +191,8 @@ class IPU:
         self.fv_tag = True if "<FV>" in self.tag_text else False
 
         self.tagcharacters, self.clean_text, self.end_tag, self.morph_withf = \
-            tagtext_to_morphwithfiller(
-                self.tag_text, start_tag, 
-                # tokenizer_name=tokenizer_name, 
-                remove_tags=remove_tags)
+            tagtext_to_morphwithfp(
+                self.tag_text, start_tag, remove_tags=remove_tags)
 
 def latter_id(s):
     n = int(s)
@@ -276,15 +229,13 @@ def get_ipu_dict(trn_text_lines):
 
     return ipu_textlist_dict
 
-def get_morpheme_with_fillertag(
+def get_morpheme_with_fptag(
     speaker_id, 
     koen_id, 
     transcription_path, 
     remove_tags, 
-    # thresh_length=3, 
-    # tokenizer_name="juman"
     ):
-    """Get IDs and segmented morpheme sequence with filler tags.
+    """Get IDs and segmented morpheme sequence with fp tags.
     
     Parameters
     ----------
@@ -304,17 +255,13 @@ def get_morpheme_with_fillertag(
         list of tuple (speaker ID, koen ID, IPU ID, morpheme sequence)
     """
 
-    # # Check parameter "tokenizer_name"
-    # if not (tokenizer_name == "sudachipy" or tokenizer_name == "juman"):
-    #     ValueError("only support {\"sudachipy\", \"juman\"}")
-
     # Get dictionary of {ID of IPU: text of IPU}
     with open(transcription_path, "r", encoding="shift-jis") as f:
         trn_text_lines = f.readlines()        
     trn_text_lines = [l for l in trn_text_lines if l!="" and l[0]!="%"]
     ipu_textlist_dict = get_ipu_dict(trn_text_lines)
 
-    # Get IDs and segmented morpheme sequence with fillers
+    # Get IDs and segmented morpheme sequence with fps
     ipu_list = []
     ipu_id = "0001"
     start_tag = []
@@ -325,7 +272,6 @@ def get_morpheme_with_fillertag(
             ipu_textlist_dict,
             start_tag,
             remove_tags,
-            # tokenizer_name=tokenizer_name
             )
 
         # Skip if IPU includes "R" or "?" tag
@@ -340,10 +286,6 @@ def get_morpheme_with_fillertag(
             else:
                 ipu_text.append(m["surface"])
 
-        # # フィラー含め 3 形態素未満は除く
-        # if len(ipu_text) < thresh_length:
-        #     continue
-
         # Add (speaker ID, koen ID, IPU ID, morpheme sequence) to list of IPU
         ipu_list.append((
             speaker_id, koen_id, ipu_id, " ".join(ipu_text)
@@ -351,7 +293,6 @@ def get_morpheme_with_fillertag(
         start_tag = ipu.end_tag
         ipu_id = latter_id(ipu_id)
             
-    # return "\n".join(ipu_list)
     return ipu_list
 
 if __name__ == '__main__':
@@ -365,7 +306,7 @@ if __name__ == '__main__':
     # start_tag = []
     
     # print(tag_text)
-    # _, cleantext, _, m, b = tagtext_to_tokenwithfiller(tag_text,start_tag)
+    # _, cleantext, _, m, b = tagtext_to_tokenwithfp(tag_text,start_tag)
     # for im in m:
     #     print(im)
     #print(len([im[1] for im in m if im[0]=="F"]))

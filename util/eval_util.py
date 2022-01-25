@@ -1,7 +1,7 @@
 import torch
 
 def calc_score_all(output, target):
-    """Calculate precision, recall, f-score, and specificity for filler position.
+    """Calculate precision, recall, f-score, and specificity for fp position.
 
     Params
     ------
@@ -43,8 +43,8 @@ def calc_score_all(output, target):
         
     return precision, recall, f_score, specificity
 
-def calc_score_each_filler(output, target, filler_index):
-    """Calculate precision, recall, f-score, and specificity for each filler.
+def calc_score_each_fp(output, target, fp_index):
+    """Calculate precision, recall, f-score, and specificity for each fp.
 
     Params
     ------
@@ -52,8 +52,8 @@ def calc_score_each_filler(output, target, filler_index):
         Output of model, shape of (batch, max_text_len, tagset_size)
     target: torch.Tensor
         Target, shape of (batch, max_text_len)
-    filler_index : int
-        Filler's index in filler list
+    fp_index : int
+        fp's index in fp list
 
     Returns
     -------
@@ -70,11 +70,11 @@ def calc_score_each_filler(output, target, filler_index):
     # Precision, recall, specificity
     tp_fp = tp_fn = tn_fp = tp = tn = 0
     for i in range(len(output)):
-        tp_fp += (torch.argmax(output[i], dim=1) == filler_index).sum()
-        tp_fn += (target[i] == filler_index).sum()
-        tn_fp += (target[i] != filler_index).sum()
-        tp += ((torch.argmax(output[i], dim=1) == filler_index) & (target[i] == filler_index)).sum()
-        tn += ((torch.argmax(output[i], dim=1) != filler_index) & (target[i] != filler_index)).sum()
+        tp_fp += (torch.argmax(output[i], dim=1) == fp_index).sum()
+        tp_fn += (target[i] == fp_index).sum()
+        tn_fp += (target[i] != fp_index).sum()
+        tp += ((torch.argmax(output[i], dim=1) == fp_index) & (target[i] == fp_index)).sum()
+        tn += ((torch.argmax(output[i], dim=1) != fp_index) & (target[i] != fp_index)).sum()
 
     precision = tp / tp_fp if tp_fp != 0 else None
     recall = tp / tp_fn if tp_fn != 0 else None

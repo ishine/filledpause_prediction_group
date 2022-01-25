@@ -4,13 +4,13 @@ from pathlib import Path
 import hydra
 from omegaconf import DictConfig
 
-def analyze_filler(config):
+def analyze_fp(config):
 
-    # Fillers
-    with open(config.filler_list_path, "r") as f:
-        fillers = [l.strip() for l in f]
+    # FPs
+    with open(config.fp_list_path, "r") as f:
+        fp_list = [l.strip() for l in f]
 
-    # Get frequency rate of each filler word
+    # Get frequency rate of each fp word
     for tagtext_list_path in Path(config.out_dir).glob("*.list"):
         with open(tagtext_list_path, "r") as f:
             tagtext_all = f.read()
@@ -26,28 +26,28 @@ def analyze_filler(config):
                         n_morph += 1
                 n_position += n_morph + 1
 
-        n_each_filler_dict = {}
-        n_filler = 0
-        for filler in fillers:
-            n = tagtext_all.count(f"(F{filler})")
-            n_filler += n
-            n_each_filler_dict[filler] = n / n_position
+        n_each_fp_dict = {}
+        n_fp = 0
+        for fp in fp_list:
+            n = tagtext_all.count(f"(F{fp})")
+            n_fp += n
+            n_each_fp_dict[fp] = n / n_position
 
-        n_filler_all = len(re.findall(r"\(F.*?\)", tagtext_all))
-        n_each_filler_dict["others"] = (n_filler_all - n_filler) / n_position
-        n_each_filler_dict["no_filler"] = 1 - n_filler_all / n_position
+        n_fp_all = len(re.findall(r"\(F.*?\)", tagtext_all))
+        n_each_fp_dict["others"] = (n_fp_all - n_fp) / n_position
+        n_each_fp_dict["no_fp"] = 1 - n_fp_all / n_position
 
 
-        n_each_filler_text = "\n".join(
-            [f"{filler}:{n}" for filler, n in n_each_filler_dict.items()]
+        n_each_fp_text = "\n".join(
+            [f"{fp}:{n}" for fp, n in n_each_fp_dict.items()]
         )
         
-        with open(tagtext_list_path.parent / (tagtext_list_path.stem + "_filler_rate.list"), "w") as f:
-            f.write(n_each_filler_text)
+        with open(tagtext_list_path.parent / (tagtext_list_path.stem + "_fp_rate.list"), "w") as f:
+            f.write(n_each_fp_text)
 
 @hydra.main(config_path="conf/preprocess", config_name="config")
 def myapp(config: DictConfig):
-    analyze_filler(config)
+    analyze_fp(config)
 
 if __name__=="__main__":
     myapp()
