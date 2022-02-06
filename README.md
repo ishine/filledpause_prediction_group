@@ -34,7 +34,7 @@ Install CSJ to the directory ``corpus/`` from [here](https://ccd.ninjal.ac.jp/cs
 ### Step 1: Get CSJ information
 The script ``get_csj_info.py`` get the list of the pairs of speaker and lecture id and the list of the core speakers.
 ```
-python get_csj_info.py
+python get_csj_info.py path/to/CSJ path/to/CSJ/fileList.csv
 ```
 
 ### Step 2: Preprocess
