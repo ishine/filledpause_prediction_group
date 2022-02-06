@@ -1,10 +1,21 @@
+import argparse
 import pandas as pd
+from pathlib import Path
 
 if __name__ == "__main__":
-    corpus_info_path = "./corpus/CSJ/fileList.csv"
-    speaker_koen_list_path = "./corpus/CSJ/speaker_koen.list"
-    speaker_list_path = "./corpus/CSJ/speaker.list"
+    parser = argparse.ArgumentParser()
+    parser.add_argument("corpus_dir", type=str, help="path to corpus (CSJ) directory")
+    parser.add_argument("corpus_info_path", type=str, help="path to \"fileList.csv\"")
+    args = parser.parse_args()
 
+    # Input path
+    corpus_info_path = Path(args.corpus_info_path)
+
+    # Output path
+    speaker_koen_list_path = Path(args.corpus_dir) / "speaker_koen.list"
+    speaker_list_path = Path(args.corpus_dir) / "speaker.list"
+
+    # Read csv
     df = pd.read_csv(corpus_info_path)
 
     # get list of pair (speaker id, koen ids) in CSJ
