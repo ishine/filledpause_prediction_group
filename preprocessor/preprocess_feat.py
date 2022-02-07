@@ -49,7 +49,9 @@ def extract_feats(config):
         outputs = bert_model(token_tensor)
         outputs_numpy = outputs[0].numpy().squeeze(axis=0).copy()
         
-        assert outputs_numpy.shape[0] == np.array(fp_labels).shape[0], "1st array length {} should be equal to 2nd array length {}".format(outputs_numpy.shape[0], np.array(fp_labels).shape[0])
+        assert outputs_numpy.shape[0] == np.array(fp_labels).shape[0], \
+            "1st array length {} should be equal to 2nd array length {}".format(
+                outputs_numpy.shape[0], np.array(fp_labels).shape[0])
         np.save(in_dir / f"{speaker_id}-{koen_id}-{ipu_id}-feats.npy", outputs_numpy)
         np.save(out_dir / f"{speaker_id}-{koen_id}-{ipu_id}-feats.npy", np.array(fp_labels))
 
@@ -67,8 +69,9 @@ def extract_feats(config):
     # count time
     n_ipu = len(ipus)
     elapsed_time = time.time() - start
-    time_log ="elapsed_time of feature extraction: {} [sec]".format(elapsed_time)
-    time_log_ipu ="elapsed_time of feature extraction (per IPU): {} [sec]".format(elapsed_time / n_ipu)
+    time_log = "elapsed_time of feature extraction: {} [sec]".format(elapsed_time)
+    time_log_ipu = "elapsed_time of feature extraction (per IPU): \
+        {} [sec]".format(elapsed_time / n_ipu)
     print(time_log + "\n" + time_log_ipu)
     with open(Path(config.out_dir) / "time.log", "w") as f:
         f.write(time_log + "\n" + time_log_ipu)
@@ -83,7 +86,8 @@ def extract_feats_test(config):
     # Prepare bert
     bert_model_dir = Path(config.bert_model_dir)
     vocab_file_path = bert_model_dir / "vocab.txt"
-    bert_tokenizer = BertTokenizer(vocab_file_path, do_lower_case=False, do_basic_tokenize=False)
+    bert_tokenizer = BertTokenizer(
+        vocab_file_path, do_lower_case=False, do_basic_tokenize=False)
     bert_model = BertModel.from_pretrained(bert_model_dir)
     bert_model.eval()
     def preprocess_utt(utt_id, utt, in_dir, out_dir):
@@ -109,7 +113,9 @@ def extract_feats_test(config):
         outputs = bert_model(token_tensor)
         outputs_numpy = outputs[0].numpy().squeeze(axis=0).copy()
         
-        assert outputs_numpy.shape[0] == np.array(fp_labels).shape[0], "1st array length {} should be equal to 2nd array length {}".format(outputs_numpy.shape[0], np.array(fp_labels).shape[0])
+        assert outputs_numpy.shape[0] == np.array(fp_labels).shape[0], \
+            "1st array length {} should be equal to 2nd array length {}".format(
+                outputs_numpy.shape[0], np.array(fp_labels).shape[0])
         np.save(in_dir / f"{utt_id}-feats.npy", outputs_numpy)
         np.save(out_dir / f"{utt_id}-feats.npy", np.array(fp_labels))
 
@@ -128,7 +134,8 @@ def extract_feats_test(config):
     n_utt = len(utts)
     elapsed_time = time.time() - start
     time_log ="elapsed_time of feature extraction: {} [sec]".format(elapsed_time)
-    time_log_utt ="elapsed_time of feature extraction (per utt): {} [sec]".format(elapsed_time / n_utt)
+    time_log_utt ="elapsed_time of feature extraction (per utt): \
+        {} [sec]".format(elapsed_time / n_utt)
     print(time_log + "\n" + time_log_utt)
     with open(Path(config.out_dir) / "time.log", "w") as f:
         f.write(time_log + "\n" + time_log_utt)

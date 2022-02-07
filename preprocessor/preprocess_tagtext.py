@@ -9,11 +9,11 @@ from .my_analyze_token import get_morpheme_with_fptag
 
 def process_tagtext(config):
     # Read person list file
-    with open(config.person_id_list_path, "r") as f:
+    with open(Path(config.corpus_dir) / "speaker.list", "r") as f:
         person_ids = [l.strip() for l in f if len(l.strip()) > 0]
         
     # Get list of speaker ids
-    with open(config.speaker_list_path) as f:
+    with open(Path(config.corpus_dir) / "speaker_koen.list") as f:
         speakers = [
             speaker.strip() for speaker in f 
             if speaker.split(":")[0] in person_ids]

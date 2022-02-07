@@ -12,7 +12,7 @@ def split_data(config):
         utt_list = [utt.strip() for utt in f]
 
     # Read person list file
-    with open(config.person_id_list_path, "r") as f:
+    with open(Path(config.corpus_dir) / "speaker.list", "r") as f:
         person_id_list = [l.strip() for l in f if len(l.strip()) > 0]
         random.shuffle(person_id_list)
 
