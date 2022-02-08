@@ -61,6 +61,12 @@ The script ``predict.py`` predict FPs for new data. Prepare a file of utterance 
 python predict.py
 ```
 
+## Contributors
+- [Yuta Matsunaga](https://sites.google.com/g.ecc.u-tokyo.ac.jp/yuta-matsunaga/home) (The University of Tokyo, Japan) [main contributor]
+- [Takaaki Saeki](https://takaaki-saeki.github.io/) (The University of Tokyo, Japan)
+- [Shinnosuke Takamichi](https://sites.google.com/site/shinnosuketakamichi/home) (The University of Tokyo, Japan)
+- Saruwatari Hiroshi (The University of Tokyo, Japan)
+
 ## Citation
 ```
 @INPROCEEDINGS{yamazaki20blstmfillerprediction,  
