@@ -48,6 +48,17 @@ The script ``train.py`` train the non-personalized model or group-dependent mode
 ```
 python train.py
 ```
+1. Train the non-personalized model. Write the following in ``conf/train/config.yaml``.
+```
+train:
+    model_type: non_personalized
+```
+2. Train the group-dependent models. Write the following in ``conf/train/config.yaml``.
+```
+train:
+    model_type: group
+    group_id: <group_id>
+```
 
 ## Evaluation
 The script ``evaluate.py`` evaluate prediction performance of the models. This follows the setting written in ``conf/evaluate/config.yaml``. Change the setting accordingly.
