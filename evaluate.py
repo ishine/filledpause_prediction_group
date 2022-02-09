@@ -15,16 +15,16 @@ from util.train_util import collate_fn
 from util.eval_util import calc_score_all, calc_score_each_fp
 
 def evaluate(
-    config, phase, trainer, model, out_dir, fp_list, eval_fp_rate_dict):
+    config, train_config, utt_list_path, trainer, model, out_dir, fp_list, eval_fp_rate_dict):
 
     # Load utt list
-    with open(to_absolute_path(config.data[phase].utt_list), "r") as f:
+    with open(utt_list_path, "r") as f:
         sentence_list = [l.strip() for l in f]
         utt_name_list = ["-".join(sen.split(":")[:3]) for sen in sentence_list]
 
     # Dataset
-    in_feat_dir = Path(to_absolute_path(config.data.in_feat_dir))
-    out_feat_dir = Path(to_absolute_path(config.data.out_feat_dir))
+    in_feat_dir = Path(train_config.data.preprocessed_dir) / "infeats"
+    out_feat_dir = Path(train_config.data.preprocessed_dir) / "outfeats"
 
     in_feats_paths = [p for p in in_feat_dir.glob("*-feats.npy") if p.stem.split("-feats")[0] in utt_name_list]
     out_feats_paths = [out_feat_dir / in_path.name for in_path in in_feats_paths]
@@ -70,15 +70,15 @@ def evaluate(
             prediction_list.append(prediction)
             target_list.append(target)
 
-            if config.eval.each_speaker:
-                if speaker_id in prediction_dict.keys():
-                    prediction_dict[speaker_id].append(prediction)
-                else:
-                    prediction_dict[speaker_id] = [prediction]
-                if speaker_id in target_dict.keys():
-                    target_dict[speaker_id].append(target)
-                else:
-                    target_dict[speaker_id] = [target]
+            # Each speaker
+            if speaker_id in prediction_dict.keys():
+                prediction_dict[speaker_id].append(prediction)
+            else:
+                prediction_dict[speaker_id] = [prediction]
+            if speaker_id in target_dict.keys():
+                target_dict[speaker_id].append(target)
+            else:
+                target_dict[speaker_id] = [target]
 
     with open(out_dir / "fp_prediction.txt", "w") as f:
         print("writing prediction...")
@@ -138,48 +138,45 @@ def evaluate(
         ) + "\n".join(out_texts)
 
     # Each speaker
-    if config.eval.each_speaker:
-        out_text += "\n--- speakers ---\n"
-        f_scores = []
-        f_score_words = []
-        for spk in prediction_dict.keys():
-            prediction_list = prediction_dict[spk]
-            target_list = target_dict[spk]
-            _, _, f_score, _ = calc_score_all(
+    out_text += "\n--- speakers ---\n"
+    f_scores = []
+    f_score_words = []
+    for spk in prediction_dict.keys():
+        prediction_list = prediction_dict[spk]
+        target_list = target_dict[spk]
+        _, _, f_score, _ = calc_score_all(
+            prediction_list,
+            target_list
+        )
+        f_scores.append(f_score)
+        out_text += "{}: \t\t{},".format(spk, f_score)
+
+        precision_word = 0
+        recall_word = 0
+        f_score_word = 0
+        specificity_word = 0
+        rate_sum = 0
+        for i in tqdm(range(len(fp_list))):
+            fp_rate = eval_fp_rate_dict[fp_list[i]]
+            rate_sum += fp_rate
+
+            precision, recall, f_score, specificity = calc_score_each_fp(
                 prediction_list,
-                target_list
+                target_list,
+                i + 1
             )
-            f_scores.append(f_score)
-            out_text += "{}: \t\t{},".format(spk, f_score)
+            if precision is not None and torch.isnan(precision).sum() == 0:
+                precision_word += precision * fp_rate
+            if recall is not None and torch.isnan(recall).sum() == 0:
+                recall_word += recall * fp_rate
+            if f_score is not None and torch.isnan(f_score).sum() == 0:
+                f_score_word += f_score * fp_rate
+            if specificity is not None and torch.isnan(specificity).sum() == 0:
+                specificity_word += specificity * fp_rate
 
-            precision_word = 0
-            recall_word = 0
-            f_score_word = 0
-            specificity_word = 0
-            rate_sum = 0
-            for i in tqdm(range(len(fp_list))):
-                fp_rate = eval_fp_rate_dict[fp_list[i]]
-                rate_sum += fp_rate
-
-                precision, recall, f_score, specificity = calc_score_each_fp(
-                    prediction_list,
-                    target_list,
-                    i + 1
-                )
-                if precision is not None and torch.isnan(precision).sum() == 0:
-                    precision_word += precision * fp_rate
-                if recall is not None and torch.isnan(recall).sum() == 0:
-                    recall_word += recall * fp_rate
-                if f_score is not None and torch.isnan(f_score).sum() == 0:
-                    f_score_word += f_score * fp_rate
-                if specificity is not None and torch.isnan(specificity).sum() == 0:
-                    specificity_word += specificity * fp_rate
-
-            f_score_words.append(f_score_word)
-            out_text += "\t{}\n".format(f_score_word / rate_sum)
+        f_score_words.append(f_score_word)
+        out_text += "\t{}\n".format(f_score_word / rate_sum)
         
-        # out_text += "var: \t\t{},\t{}".format(np.var(f_scores), np.var(f_score_words))
-
     # Write scores
     with open(out_dir / "scores.txt", "w") as f:
         print("writing score...")
@@ -498,30 +495,52 @@ def main(config: DictConfig):
     # Phase
     phase = "eval"
 
-    # Out directory
-    default_root_dir = Path(to_absolute_path(config[phase].default_root_dir))
-    ckpt_dir = default_root_dir / "ckpt"
+    # Model type
+    model_type = config[phase].model_type
+    if model_type == "non_personalized":
+        model_name = "non_personalized"
+    elif model_type == "group":
+        group_id = config[phase].group_id
+        model_name = "group{}".format(str(group_id))
+
+    # Input directory
+    exp_dir = Path(to_absolute_path(config[phase].exp_dir))
+    exp_dir_m = exp_dir / model_name
+    ckpt_dir = exp_dir_m / "ckpt"
+
+    # Output directory
     out_dir = Path(to_absolute_path(config[phase].out_dir))
-    out_dir.mkdir(parents=True, exist_ok=True)
+    out_dir_m = out_dir / model_name
+    out_dir_m.mkdir(parents=True, exist_ok=False)
 
     # Load config
-    train_config = OmegaConf.load(default_root_dir / "config.yaml")
+    train_config = OmegaConf.load(exp_dir_m / "config.yaml")
 
     # Save config
-    with open(out_dir / "config.yaml", "w") as f:
+    with open(out_dir_m / "config.yaml", "w") as f:
         OmegaConf.save(config, f)
 
     # Set rrandom seed
     pl.seed_everything(config.random_seed)
 
+    # Utterance list
+    if model_type == "non_personalized":
+        utt_list_path = Path(train_config.data.preprocessed_dir) / "eval_all.list"
+    elif model_type == "group":
+        utt_list_path = Path(train_config.data.preprocessed_dir) / "eval_{}.list".format(model_name)
+
     # FPs
-    fp_list_path = Path(to_absolute_path(config.data.fp_list))
+    fp_list_path = Path(train_config.data.fp_list)
     with open(fp_list_path, "r") as f:
         fp_list = [l.strip() for l in f]
 
     # Get fp rate
     eval_fp_rate_dict = {}
-    eval_fp_rate_list_path = Path(to_absolute_path(config.data.eval.fp_rate_list))
+    if model_type == "non_personalized":
+        eval_fp_rate_list_path = Path(train_config.data.preprocessed_dir) / "eval_all_fp_rate.list"
+    elif model_type == "group":
+        eval_fp_rate_list_path = \
+            Path(train_config.data.preprocessed_dir) / "eval_{}_fp_rate.list".format(model_name)
     with open(eval_fp_rate_list_path, "r") as f:
         for l in f:
             eval_fp_rate_dict[l.strip().split(":")[0]] = float(l.strip().split(":")[1])
@@ -554,12 +573,12 @@ def main(config: DictConfig):
         # gpu
         gpus=config[phase].gpus,
         auto_select_gpus=config[phase].auto_select_gpus,
-        default_root_dir=default_root_dir,
+        default_root_dir=exp_dir_m,
         # profiler="simple",
     )
 
     # Predict
-    evaluate(config, phase, trainer, pl_model, out_dir, fp_list, eval_fp_rate_dict)
+    evaluate(config, train_config, utt_list_path, trainer, pl_model, out_dir_m, fp_list, eval_fp_rate_dict)
 
     # elif config.corpus.name == "utokyo_naist_lecture":
     #     predict_utokyo_naist_lecture(config, phase, trainer, pl_model, out_dir, fp_list, eval_fp_rate_dict)
