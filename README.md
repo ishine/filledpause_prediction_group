@@ -65,6 +65,17 @@ The script ``evaluate.py`` evaluate prediction performance of the models. This f
 ```
 python evaluate.py
 ```
+1. Evaluate the non-personalized model. Write the following in ``conf/evaluate/config.yaml``.
+```
+eval:
+    model_type: non_personalized
+```
+2. Evaluate the group-dependent models. Write the following in ``conf/evaluate/config.yaml``.
+```
+eval:
+    model_type: group
+    group_id: <group_id>
+```
 
 ## Prediction
 The script ``predict.py`` predict FPs for new data. Prepare a file of utterance list and run script. This follows the setting written in ``conf/predict/config.yaml``. Change the setting accordingly.
