@@ -142,11 +142,16 @@ def myapp(config: DictConfig):
 
     # Set output directory
     out_dir = Path(to_absolute_path(config.train.out_dir))
+    if config.train.model_type == "non_personalized":
+        out_dir_m = out_dir / "non_personalized"
+    elif config.train.model_type == "group":
+        group_id = config.train.group_id
+        out_dir_m = out_dir / "group{}".format(str(group_id))
     exist_ok = True if config.train.resume else False
-    out_dir.mkdir(parents=True, exist_ok=exist_ok)
+    out_dir_m.mkdir(parents=True, exist_ok=exist_ok)
 
     # Save config
-    with open(out_dir / "config.yaml", "w") as f:
+    with open(out_dir_m / "config.yaml", "w") as f:
         OmegaConf.save(config, f)
 
     # Random seed
@@ -170,7 +175,6 @@ def myapp(config: DictConfig):
 
     # Trainig non-personalized model
     if config.train.model_type == "non_personalized":
-        out_dir_m = out_dir / "non_personalized"
         train_fp_rate_list_path = Path(config.data.preprocessed_dir) / "train_all_fp_rate.list"
         dev_fp_rate_list_path = Path(config.data.preprocessed_dir) / "dev_all_fp_rate.list"
         utt_list_paths = {}
@@ -191,7 +195,6 @@ def myapp(config: DictConfig):
             "*-step={}.ckpt".format(str(config.train.load_ckpt_step))
         ))[0]
         group_id = config.train.group_id
-        out_dir_m = out_dir / "group{}".format(str(group_id))
         train_fp_rate_list_path = \
             Path(config.data.preprocessed_dir) / "train_group{}_fp_rate.list".format(str(group_id))
         dev_fp_rate_list_path = \
