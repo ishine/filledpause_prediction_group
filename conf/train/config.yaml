@@ -12,9 +12,7 @@ data:
   batch_size: 32
   num_workers: 4
 
-  preprocessed_dir: ./preprocessed_data/CSJ/ver220109
-  # in_dir: ./preprocessed_data/CSJ/ver220109/infeats
-  # out_dir: ./preprocessed_data/CSJ/ver220109/outfeats
+  preprocessed_dir: ./preprocessed_data/CSJ/ver220109_word
 
   fp_list: ./corpus/CSJ/fp.list
 
@@ -23,16 +21,16 @@ train:
 
   loss_weights: True
 
-  model_type: non_presonalized       # {non_presonalized, group}
+  model_type: group       # {non_personalized, group}
   group_id: 1                        # id of group, if model is group
   
-  fine_tune: False
+  fine_tune: True
   resume: False
   load_ckpt_step: 59999
 
   gpus: 1
   auto_select_gpus: True
-  max_steps: 50000
+  max_steps: 20000
   check_val_every_n_epoch: 5
   gradient_clip_val: 0.5
 
