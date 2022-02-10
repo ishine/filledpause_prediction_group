@@ -10,11 +10,11 @@ data:
   num_workers: 4
     
 eval:
-  exp_dir: exp/CSJ/ver220110
-  out_dir: predicted_data/CSJ/ver220110
+  exp_dir: exp/CSJ/ver220209
+  out_dir: predicted_data/CSJ/ver220209
 
   model_type: group       # {non_personalized, group}
-  group_id: 1                        # id of group, if model is group
+  group_id: 4                        # id of group, if model is group
 
   loss_weights: True
 

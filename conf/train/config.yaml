@@ -12,12 +12,12 @@ data:
   batch_size: 32
   num_workers: 4
 
-  preprocessed_dir: ./preprocessed_data/CSJ/ver220109_word
+  preprocessed_dir: ./preprocessed_data/CSJ/ver220109_position
 
   fp_list: ./corpus/CSJ/fp.list
 
 train:
-  out_dir: exp/CSJ/ver220110
+  out_dir: exp/CSJ/ver220209
 
   loss_weights: True
 
