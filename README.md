@@ -4,7 +4,7 @@ This is a source implementation of group-dependent filled pause (FP) prediction 
 
 ## Group-dependent filled pause prediction models
 
-Explanation of clustering and model training. Coming soon...
+We describe the detailed process of grouping speakers and training models in [paper](#Citation).
 
 ### Models
 
@@ -52,12 +52,15 @@ python train.py
 ```
 train:
     model_type: non_personalized
+    fine_tune: False
 ```
 2. Train the group-dependent models. Write the following in ``conf/train/config.yaml``.
 ```
 train:
     model_type: group
     group_id: <group_id>
+    fine_tune: True
+    load_ckpt_step: <step>
 ```
 
 ## Evaluation
@@ -87,41 +90,9 @@ python predict.py
 - [Yuta Matsunaga](https://sites.google.com/g.ecc.u-tokyo.ac.jp/yuta-matsunaga/home) (The University of Tokyo, Japan) [main contributor]
 - [Takaaki Saeki](https://takaaki-saeki.github.io/) (The University of Tokyo, Japan)
 - [Shinnosuke Takamichi](https://sites.google.com/site/shinnosuketakamichi/home) (The University of Tokyo, Japan)
-- Saruwatari Hiroshi (The University of Tokyo, Japan)
+- [Hiroshi Saruwatari](https://researchmap.jp/read0102891/) (The University of Tokyo, Japan)
 
 ## Citation
 ```
-@INPROCEEDINGS{yamazaki20blstmfillerprediction,  
-    author={Yamazaki, Yoshihiro and Chiba, Yuya and Nose, Takashi and Ito, Akinori},  
-    booktitle={Proc. GCCE},   
-    title={Filler Prediction Based on Bidirectional LSTM for Generation of Natural Response of Spoken Dialog},   
-    year={2020},  
-    pages={360--361},  
-    doi={10.1109/GCCE50665.2020.9291867}
-}
-@inproceedings{morita15jumanpp,
-    title = "Morphological Analysis for Unsegmented Languages using Recurrent Neural Network Language Model",
-    author = "Morita, Hajime  and
-      Kawahara, Daisuke  and
-      Kurohashi, Sadao",
-    booktitle = "Proc. EMNLP",
-    year = "2015",
-    pages = "2292--2297",
-    doi = "10.18653/v1/D15-1276",
-}
-@article{maekawa04csj,
-    author="Maekawa, K.",
-    title="Corpus of Spontaneous Japanese : its design and evaluation",
-    journal="Proc. SSPR",
-    year="2003",
-    pages="7--12",
-    URL="https://ci.nii.ac.jp/naid/10013308127/",
-}
-@article{devlin19bert,
-      title={BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding}, 
-      author={Jacob Devlin and Ming-Wei Chang and Kenton Lee and Kristina Toutanova},
-      year={2019},
-      journal={arXiv},
-      volume={abs/1810.04805},
-}
+Coming soon...
 ```
