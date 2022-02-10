@@ -12,14 +12,14 @@ Group-dependent filled pause prediction models are available at ``model_files/``
 
 | filename (``model_files/``)  | description          |
 | ---                    | ---                  |
-| word_model1.ckpt       | model 1 (word)       |
-| word_model2.ckpt       | model 2 (word)       |
-| word_model3.ckpt       | model 3 (word)       |
-| word_model4.ckpt       | model 4 (word)       |
-| position_model1.ckpt   | model 1 (position)   |
-| position_model2.ckpt   | model 2 (position)   |
-| position_model3.ckpt   | model 3 (position)   |
-| position_model4.ckpt   | model 4 (position)   |
+| word_group1.ckpt       | group 1 (word)       |
+| word_group2.ckpt       | group 2 (word)       |
+| word_group3.ckpt       | group 3 (word)       |
+| word_group4.ckpt       | group 4 (word)       |
+| position_group1.ckpt   | group 1 (position)   |
+| position_group2.ckpt   | group 2 (position)   |
+| position_group3.ckpt   | group 3 (position)   |
+| position_group4.ckpt   | group 4 (position)   |
 
 ## Preparation for training
 
