@@ -2,6 +2,14 @@
 
 This is a source implementation of group-dependent filled pause (FP) prediction on the basis of FP usage of speakers in Corpus of Spontaneous Japanese (CSJ). There are 8 group-dependent models on the basis of FP words and positions in ``model_files`` (detailed in [here](#models))
 
+## Requirements
+
+You can install the Python requirements with
+```
+pip install -r requirements.txt
+```
+Our recommendation of the Python version is ``3.8``.
+
 ## Group-dependent filled pause prediction models
 
 We describe the detailed process of grouping speakers and training models in [paper](#Citation).
