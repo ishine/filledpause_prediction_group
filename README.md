@@ -89,7 +89,12 @@ eval:
 ```
 
 ## Prediction
-The script ``predict.py`` predict FPs for new data. Prepare a file of utterance list and run script. This follows the setting written in ``conf/predict/config.yaml``. Change the setting accordingly.
+The script ``predict.py`` predict FPs for new data.
+1. Prepare a file of utterance list and run the script of preprocess. You can see an example of the utterance list to predict FPs in ``preprocessed_data/example``. This follows the setting written in ``conf/preprocess_test/config.yaml``. Change the setting accordingly.
+```
+python preprocess_test.py
+```
+2. Then, run the script of prediction. This follows the setting written in ``conf/predict/config.yaml``. Change the setting accordingly.
 ```
 python predict.py
 ```
