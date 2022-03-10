@@ -76,7 +76,7 @@ def extract_feats(config):
     with open(Path(config.out_dir) / "time.log", "w") as f:
         f.write(time_log + "\n" + time_log_ipu)
 
-def extract_feats_test(config):
+def extract_feats_test(config, utt_list_name):
     start = time.time()
 
     # FPs
@@ -124,7 +124,7 @@ def extract_feats_test(config):
     outfeats_dir = Path(config.out_dir) / "outfeats"
     infeats_dir.mkdir(parents=True, exist_ok=True)
     outfeats_dir.mkdir(parents=True, exist_ok=True)
-    with open(Path(config.out_dir) / f"utt.list", "r") as f:
+    with open(Path(config.out_dir) / "{}.list".format(utt_list_name), "r") as f:
         utts = [tuple(l.split(":")) for l in f.readlines()]
     with torch.no_grad():
         for utt_id, utt in tqdm(utts):

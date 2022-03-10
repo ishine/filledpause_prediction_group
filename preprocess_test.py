@@ -5,7 +5,7 @@ from pathlib import Path
 import hydra
 from omegaconf import DictConfig, OmegaConf
 # My library
-from preprocessor import extract_feats_test
+from preprocessor import process_morph, extract_feats_test
 
 @hydra.main(config_path="conf/preprocess_test", config_name="config")
 def main(config: DictConfig):
@@ -19,8 +19,10 @@ def main(config: DictConfig):
         OmegaConf.save(config, f)
 
     # Preprocess
+    print("process morphs...")
+    process_morph(config)
     print("extract features...")
-    extract_feats_test(config)
+    extract_feats_test(config, "utt_morphs")
 
 if __name__ == "__main__":
     main()
