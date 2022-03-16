@@ -11,9 +11,9 @@ from pytorch_lightning.callbacks import LearningRateMonitor
 from pytorch_lightning.callbacks.model_checkpoint import ModelCheckpoint
 
 # My Library
-from module import MyLightningModel
-from dataset import MyDataset
-from util.train_util import collate_fn
+from fp_pred_group.module import MyLightningModel
+from fp_pred_group.dataset import MyDataset
+from fp_pred_group.util.train_util import collate_fn
 
 def get_data_loaders(data_config, utt_list_paths, in_dir, out_dir, collate_fn):
     data_loaders = {}

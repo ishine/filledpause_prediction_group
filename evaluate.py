@@ -9,10 +9,10 @@ from torch.utils.data import DataLoader
 import pytorch_lightning as pl
 
 # My library
-from dataset import MyDataset
-from module import MyLightningModel
-from util.train_util import collate_fn
-from util.eval_util import calc_score_all, calc_score_each_fp
+from fp_pred_group.dataset import MyDataset
+from fp_pred_group.module import MyLightningModel
+from fp_pred_group.util.train_util import collate_fn
+from fp_pred_group.util.eval_util import calc_score_all, calc_score_each_fp
 
 def evaluate(
     config, train_config, utt_list_path, trainer, model, out_dir, fp_list, eval_fp_rate_dict):

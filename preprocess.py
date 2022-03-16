@@ -5,7 +5,7 @@ from pathlib import Path
 import hydra
 from omegaconf import DictConfig, OmegaConf
 # My library
-from preprocessor import extract_feats, split_data, process_tagtext, analyze_fp
+from fp_pred_group.preprocessor import extract_feats, split_data, process_tagtext, analyze_fp
 
 @hydra.main(config_path="conf/preprocess", config_name="config")
 def main(config: DictConfig):

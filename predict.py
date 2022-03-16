@@ -9,9 +9,9 @@ from torch.utils.data import DataLoader
 import pytorch_lightning as pl
 
 # My library
-from dataset import MyDataset
-from module import MyLightningModel
-from util.train_util import collate_fn
+from fp_pred_group.dataset import MyDataset
+from fp_pred_group.module import MyLightningModel
+from fp_pred_group.util.train_util import collate_fn
 
 def predict(utt_list_path, in_feat_dir, out_feat_dir, out_dir,
             batch_size, num_workers, trainer, model, fp_list):

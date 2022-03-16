@@ -5,7 +5,7 @@ import pytorch_lightning as pl
 from tqdm import tqdm
 
 # My library
-from util.eval_util import calc_score_all, calc_score_each_fp
+from fp_pred_group.util.eval_util import calc_score_all, calc_score_each_fp
 
 class MyLightningModel(pl.LightningModule):
 

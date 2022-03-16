@@ -2,7 +2,7 @@ import numpy as np
 import torch
 from torch.utils.data import Dataset
 
-from util.train_util import pad_1d, pad_2d
+from fp_pred_group.util.train_util import pad_1d, pad_2d
 
 class MyDataset(Dataset):
     def __init__(self, in_paths, out_paths):
