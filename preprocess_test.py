@@ -13,16 +13,16 @@ def main(config: DictConfig):
     random.seed(config.random_seed)
 
     # Save config
-    out_dir = Path(config.out_dir)
-    out_dir.mkdir(parents=True, exist_ok=True)
-    with open(out_dir / "config.yaml", "w") as f:
+    data_dir = Path(config.data_dir)
+    data_dir.mkdir(parents=True, exist_ok=True)
+    with open(data_dir / "config.yaml", "w") as f:
         OmegaConf.save(config, f)
 
     # Preprocess
     print("process morphs...")
-    process_morph(config)
+    process_morph(data_dir)
     print("extract features...")
-    extract_feats_test(config, "utt_morphs")
+    extract_feats_test(data_dir, config.fp_list_path, config.bert_model_dir, "utt_morphs")
 
 if __name__ == "__main__":
     main()

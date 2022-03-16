@@ -6,11 +6,11 @@ from omegaconf import DictConfig
 from pyknp import Juman
 
 
-def process_morph(config):
+def process_morph(data_dir):
 
     juman = Juman()
 
-    with open(Path(config.out_dir) / f"utt.list", "r") as f:
+    with open(Path(data_dir) / f"utt.list", "r") as f:
         utts = [tuple(l.strip().split(":")) for l in f.readlines()]
 
     out_utts = []
@@ -21,7 +21,7 @@ def process_morph(config):
         out_utts.append(
             "{}:{}".format(utt_id, utt_morphs))
     
-    with open(Path(config.out_dir) / f"utt_morphs.list", "w") as f:
+    with open(Path(data_dir) / f"utt_morphs.list", "w") as f:
         f.write("\n".join(out_utts))
 
 @hydra.main(config_path="conf/preprocess", config_name="config")

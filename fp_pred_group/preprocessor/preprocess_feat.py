@@ -76,15 +76,15 @@ def extract_feats(config):
     with open(Path(config.out_dir) / "time.log", "w") as f:
         f.write(time_log + "\n" + time_log_ipu)
 
-def extract_feats_test(config, utt_list_name):
+def extract_feats_test(data_dir, fp_list_path, bert_model_dir, utt_list_name):
     start = time.time()
 
     # FPs
-    with open(config.fp_list_path, "r") as f:
+    with open(fp_list_path, "r") as f:
         fp_list = [l.strip() for l in f]
 
     # Prepare bert
-    bert_model_dir = Path(config.bert_model_dir)
+    bert_model_dir = Path(bert_model_dir)
     vocab_file_path = bert_model_dir / "vocab.txt"
     bert_tokenizer = BertTokenizer(
         vocab_file_path, do_lower_case=False, do_basic_tokenize=False)
@@ -120,11 +120,11 @@ def extract_feats_test(config, utt_list_name):
         np.save(out_dir / f"{utt_id}-feats.npy", np.array(fp_labels))
 
     # extraxt features
-    infeats_dir = Path(config.out_dir) / "infeats"
-    outfeats_dir = Path(config.out_dir) / "outfeats"
+    infeats_dir = Path(data_dir) / "infeats"
+    outfeats_dir = Path(data_dir) / "outfeats"
     infeats_dir.mkdir(parents=True, exist_ok=True)
     outfeats_dir.mkdir(parents=True, exist_ok=True)
-    with open(Path(config.out_dir) / "{}.list".format(utt_list_name), "r") as f:
+    with open(Path(data_dir) / "{}.list".format(utt_list_name), "r") as f:
         utts = [tuple(l.split(":")) for l in f.readlines()]
     with torch.no_grad():
         for utt_id, utt in tqdm(utts):
@@ -137,7 +137,7 @@ def extract_feats_test(config, utt_list_name):
     time_log_utt ="elapsed_time of feature extraction (per utt): \
         {} [sec]".format(elapsed_time / n_utt)
     print(time_log + "\n" + time_log_utt)
-    with open(Path(config.out_dir) / "time.log", "w") as f:
+    with open(Path(data_dir) / "time.log", "w") as f:
         f.write(time_log + "\n" + time_log_utt)
 
 @hydra.main(config_path="conf/preprocess", config_name="config")
