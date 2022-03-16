@@ -6,7 +6,7 @@ This is a source implementation of group-dependent filled pause (FP) prediction 
 
 You can install the Python requirements with
 ```
-pip install -r requirements.txt
+$ pip install -r requirements.txt
 ```
 Our recommendation of the Python version is ``3.8``.
 
@@ -42,19 +42,19 @@ Install CSJ to the directory ``corpus/`` from [here](https://ccd.ninjal.ac.jp/cs
 ### Step 1: Get CSJ information
 The script ``get_csj_info.py`` get the list of the pairs of speaker and lecture id and the list of the core speakers.
 ```
-python get_csj_info.py path/to/CSJ path/to/CSJ/fileList.csv
+$ python get_csj_info.py path/to/CSJ path/to/CSJ/fileList.csv
 ```
 
 ### Step 2: Preprocess
 The script ``preprocess.py`` gets the list of utterances from the transcription files, segments them to morphemes, extracts features, splits them to training, validation, and evaluaitio data, and gets the frequency of FPs. This follows the setting written in ``conf/preprocess/config.yaml``. Change the setting accordingly.
 ```
-python preprocess.py
+$ python preprocess.py
 ```
 
 ### Step 3: Training
 The script ``train.py`` train the non-personalized model or group-dependent models. This follows the setting written in ``conf/train/config.yaml``. Change the setting accordingly.
 ```
-python train.py
+$ python train.py
 ```
 1. Train the non-personalized model. Write the following in ``conf/train/config.yaml``.
 ```
@@ -74,7 +74,7 @@ train:
 ## Evaluation
 The script ``evaluate.py`` evaluate prediction performance of the models. This follows the setting written in ``conf/evaluate/config.yaml``. Change the setting accordingly.
 ```
-python evaluate.py
+$ python evaluate.py
 ```
 1. Evaluate the non-personalized model. Write the following in ``conf/evaluate/config.yaml``.
 ```
@@ -92,11 +92,11 @@ eval:
 The script ``predict.py`` predict FPs for new data.
 1. Prepare a file of utterance list and run the script of preprocess. You can see an example of the utterance list to predict FPs in ``preprocessed_data/example``. This follows the setting written in ``conf/preprocess_test/config.yaml``. Change the setting accordingly.
 ```
-python preprocess_test.py
+$ python preprocess_test.py
 ```
 2. Then, run the script of prediction. This follows the setting written in ``conf/predict/config.yaml``. Change the setting accordingly.
 ```
-python predict.py
+$ python predict.py
 ```
 
 ## Contributors
