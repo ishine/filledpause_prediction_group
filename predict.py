@@ -9,6 +9,7 @@ from torch.utils.data import DataLoader
 import pytorch_lightning as pl
 
 # My library
+import fp_pred_group.model
 from fp_pred_group.dataset import MyDataset
 from fp_pred_group.module import MyLightningModel
 from fp_pred_group.util.train_util import collate_fn
@@ -51,7 +52,7 @@ def predict(utt_list_path, in_feat_dir, out_feat_dir, out_dir,
                     batch_idx * batch_size : (batch_idx + 1) * batch_size],
                 predictions):
 
-            utt_id = in_feats_path.stem.split("-")[0]
+            utt_id = in_feats_path.stem.split("-feats")[0]
             for sen in sentence_list:
                 if sen.startswith(f"{utt_id}"):
                     utt_text = sen.split(":")[-1]

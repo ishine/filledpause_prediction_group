@@ -4,11 +4,13 @@ This is a source implementation of group-dependent filled pause (FP) prediction 
 
 ## Requirements
 
-You can install the Python requirements with
-```
-$ pip install -r requirements.txt
-```
-Our recommendation of the Python version is ``3.8``.
+- You can install the Python requirements with
+    ```
+    $ pip install -r requirements.txt
+    ```
+  - Our recommendation of the Python version is ``3.8``.
+
+- Install BERT model to the directory ``bert/`` from [here](https://nlp.ist.i.kyoto-u.ac.jp/?ku_bert_japanese). We use pytorch-pretrained-BERT with LARGE WWM version.
 
 ## Group-dependent filled pause prediction models
 
@@ -30,9 +32,6 @@ Group-dependent filled pause prediction models are available at ``model_files/``
 | position_group4.ckpt   | group 4 (position)   |
 
 ## Preparation for training
-
-### BERT
-Install BERT model to the directory ``bert/`` from [here](https://nlp.ist.i.kyoto-u.ac.jp/?ku_bert_japanese). We use pytorch-pretrained-BERT with LARGE WWM version.
 
 ### CSJ
 Install CSJ to the directory ``corpus/`` from [here](https://ccd.ninjal.ac.jp/csj/en/). We need transcription files of ``core`` and ``noncore`` data with ``Form1``.
