@@ -1,6 +1,8 @@
 # Group-dependent filled pause prediction models and training scripts
 
-This is a source implementation of group-dependent filled pause (FP) prediction on the basis of FP usage of speakers in Corpus of Spontaneous Japanese (CSJ). There are 8 group-dependent models on the basis of FP words and positions in ``model_files`` (detailed in [here](#models))
+## About this repository
+
+This is an official implementation of [Personalized Filled-pause Generation with Group-wise Prediction Models](https://arxiv.org/abs/2203.09961) (in LREC 2022). We implement group-dependent filled pause (FP) prediction on the basis of FP usage of speakers using Corpus of Spontaneous Japanese ([CSJ](https://ccd.ninjal.ac.jp/csj/en/)). Pre-trained group-dependent models on the basis of FP words and positions and training script of group-dependent models are available.
 
 ## Requirements
 
@@ -13,32 +15,26 @@ This is a source implementation of group-dependent filled pause (FP) prediction 
 
 - Install BERT model to the directory ``bert/`` from [here](https://nlp.ist.i.kyoto-u.ac.jp/?ku_bert_japanese). We use pytorch-pretrained-BERT with LARGE WWM version.
 
-## Group-dependent filled pause prediction models
+## 1. Pre-trained group-dependent filled pause prediction models
 
-We describe the detailed process of grouping speakers and training models in [paper](#Citation).
+Pre-trained group-dependent filled pause prediction models are available at ``model_files/``. File names and model descriptions are listed below. Model files follows ``pytorch-lightning`` format. We recommend using ``predict.py`` to get prediction results (detailed in [here](#prediction)). We describe the detailed process of grouping speakers and training models in [paper](#Citation).
 
-### Models
+| filename (``model_files/``) | description          |
+| ---                         | ---                  |
+| word_group1.ckpt            | group 1 (word)       |
+| word_group2.ckpt            | group 2 (word)       |
+| word_group3.ckpt            | group 3 (word)       |
+| word_group4.ckpt            | group 4 (word)       |
+| position_group1.ckpt        | group 1 (position)   |
+| position_group2.ckpt        | group 2 (position)   |
+| position_group3.ckpt        | group 3 (position)   |
+| position_group4.ckpt        | group 4 (position)   |
 
-Group-dependent filled pause prediction models are available at ``model_files/``. File names and model descriptions are listed below. Model files follows ``pytorch-lightning`` format. We recommend using ``predict.py`` to get prediction results (detailed in [here](#prediction)).
+## 2. Training of group-dependent filled pause prediction models
 
-| filename (``model_files/``)  | description          |
-| ---                    | ---                  |
-| word_group1.ckpt       | group 1 (word)       |
-| word_group2.ckpt       | group 2 (word)       |
-| word_group3.ckpt       | group 3 (word)       |
-| word_group4.ckpt       | group 4 (word)       |
-| position_group1.ckpt   | group 1 (position)   |
-| position_group2.ckpt   | group 2 (position)   |
-| position_group3.ckpt   | group 3 (position)   |
-| position_group4.ckpt   | group 4 (position)   |
-
-## Preparation for training
-
-### CSJ
+### Step 0: Prepare CSJ data
 
 Install CSJ to the directory ``corpus/`` from [here](https://ccd.ninjal.ac.jp/csj/en/). We need transcription files of ``core`` and ``noncore`` data with ``Form1``.
-
-## Training
 
 ### Step 1: Get CSJ information
 
@@ -72,7 +68,7 @@ $ python train.py
         fine_tune: False
     ```
 
-1. Train the group-dependent models. Write the following in ``conf/train/config.yaml``.
+2. Train the group-dependent models. Write the following in ``conf/train/config.yaml``.
     
     ```
     train:
@@ -82,7 +78,7 @@ $ python train.py
         load_ckpt_step: <step>
     ```
 
-## Evaluation
+<!-- ## Evaluation
 
 The script ``evaluate.py`` evaluate prediction performance of the models. This follows the setting written in ``conf/evaluate/config.yaml``. Change the setting accordingly.
 
@@ -119,7 +115,7 @@ The script ``predict.py`` predict FPs for new data.
 
     ```
     $ python predict.py
-    ```
+    ``` -->
 
 ## Contributors
 
@@ -140,3 +136,8 @@ The script ``predict.py`` predict FPs for new data.
     pages = "385--392",
 }
 ```
+
+## References
+
+- [Corpus of Spontaneous Japanese](https://ccd.ninjal.ac.jp/csj/en/)
+- [BERT日本語Pretrainedモデル](https://nlp.ist.i.kyoto-u.ac.jp/?ku_bert_japanese)
