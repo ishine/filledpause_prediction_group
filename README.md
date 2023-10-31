@@ -17,9 +17,9 @@ This is an official implementation of [Personalized Filled-pause Generation with
 
 ## 1. Pre-trained group-dependent filled pause prediction models
 
-Pre-trained group-dependent filled pause prediction models are available at ``model_files/``. File names and model descriptions are listed below. Model files follows ``pytorch-lightning`` format. We recommend using ``predict.py`` to get prediction results (detailed in [here](#prediction)). We describe the detailed process of grouping speakers and training models in [paper](#Citation).
+Pre-trained group-dependent filled pause prediction models are available at [model_files](https://drive.google.com/drive/folders/1u5NKDaqimf4H_kwv-1wABjiffe9Htkje?usp=sharing). File names and model descriptions are listed below. Model files follows ``pytorch-lightning`` format. We recommend using ``predict.py`` to get prediction results (detailed in [here](#prediction)). We describe the detailed process of grouping speakers and training models in [paper](#Citation).
 
-| filename (``model_files/``) | description          |
+| filename                    | description          |
 | ---                         | ---                  |
 | word_group1.ckpt            | group 1 (word)       |
 | word_group2.ckpt            | group 2 (word)       |
